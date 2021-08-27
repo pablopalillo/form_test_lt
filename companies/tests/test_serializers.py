@@ -16,6 +16,17 @@ class TestCompaniesSerializer(TestCase):
 
     def test_serializer_valid_data(self):
         company_data = Companies.objects.values().first()
-        serializer_employee = CompaniesSerializer(data=company_data)
+        serializer_company = CompaniesSerializer(data=company_data)
 
-        self.assertTrue(serializer_employee.is_valid())
+        self.assertTrue(serializer_company.is_valid())
+
+    def test_serializer_validate_nit(self):
+        company_data = Companies.objects.values().first()
+        company_data.company_nit = "2314413-2" # valid NIT
+
+        serializer_company = CompaniesSerializer(data=company_data)
+        self.assertTrue(serializer_company.is_valid())
+
+        company_data.company_nit = "2314413LLKB-2"  # Not valid NIT
+        serializer_company = CompaniesSerializer(data=company_data)
+        self.assertFalse(serializer_company.is_valid())
